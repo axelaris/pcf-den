@@ -2,7 +2,7 @@
 opsman-configuration:
   vsphere:
     vcenter:
-      ca_cert: ((ssl-cert.certificate))                 # REQUIRED if insecure = 0 (secure)
+      #ca_cert: ((ssl-cert.certificate))                 # REQUIRED if insecure = 0 (secure)
       datacenter: Datacenter
       datastore: nex_iscsi
       folder: azakharov/controlplane # RECOMMENDED, but not required
@@ -15,7 +15,7 @@ opsman-configuration:
       # Optional
       # host: host      # DEPRECATED - Platform Automation cannot guarantee
                         # the location of the VM, given the nature of vSphere
-      # insecure: 1     # default - 0 (secure) | 1 (insecure)
+      insecure: 1     # default - 0 (secure) | 1 (insecure)
 
     disk_type: thin     # thin|thick
     dns: 8.8.8.8
