@@ -1,0 +1,3 @@
+platform-automation-bucket: pcf-automation
+credhub-server: https://10.100.26.6:8844
+opsman-url: https://ops.b.cf4me.xyz
