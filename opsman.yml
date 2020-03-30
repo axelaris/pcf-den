@@ -2,7 +2,7 @@
 opsman-configuration:
   vsphere:
     vcenter:
-      ca_cert: ((ssl-cert))                 # REQUIRED if insecure = 0 (secure)
+      ca_cert: ((ssl-cert.certificate))                 # REQUIRED if insecure = 0 (secure)
       datacenter: Datacenter
       datastore: nex_iscsi
       folder: azakharov/controlplane # RECOMMENDED, but not required
