@@ -5,7 +5,7 @@ opsman-configuration:
       #ca_cert: ((ssl-cert.certificate))                 # REQUIRED if insecure = 0 (secure)
       datacenter: Datacenter
       datastore: nex_iscsi
-      folder: azakharov/controlplane # RECOMMENDED, but not required
+      folder: /Datacenter/vm/azakharov/controlplane # RECOMMENDED, but not required
       url: 172.16.172.29
       username: ((vcenter-username))
       password: ((vcenter-password))
