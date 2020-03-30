@@ -2,10 +2,10 @@
 opsman-configuration:
   vsphere:
     vcenter:
-      #ca_cert: cert                 # REQUIRED if insecure = 0 (secure)
+      ca_cert: ((ssl-cert))                 # REQUIRED if insecure = 0 (secure)
       datacenter: Datacenter
       datastore: nex_iscsi
-      folder: /Datacenter/vm/azakharov/pcf # RECOMMENDED, but not required
+      folder: azakharov/controlplane # RECOMMENDED, but not required
       url: 172.16.172.29
       username: ((vcenter-username))
       password: ((vcenter-password))
@@ -15,12 +15,12 @@ opsman-configuration:
       # Optional
       # host: host      # DEPRECATED - Platform Automation cannot guarantee
                         # the location of the VM, given the nature of vSphere
-      insecure: 1     # default - 0 (secure) | 1 (insecure)
+      # insecure: 1     # default - 0 (secure) | 1 (insecure)
 
     disk_type: thin     # thin|thick
     dns: 8.8.8.8
     gateway: 10.100.26.1
-    hostname: ops.b.cf4me.xyz
+    hostname: ops.cf4me.xyz
     netmask: 255.255.255.0
     network: zakharov_vlan_1026
     ntp: ntp.ubuntu.com
@@ -32,4 +32,4 @@ opsman-configuration:
     # memory: 8                      # default - 8 (GB)
     # ssh_password: ((ssh-password)) # REQUIRED if ssh_public_key not defined
                                      # (Ops Manager < 2.6 ONLY)
-    # vm_name: ops-manager-vm        # default - ops-manager-vm
+    vm_name: ops-manager        # default - ops-manager-vm
