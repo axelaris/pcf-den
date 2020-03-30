@@ -2,7 +2,7 @@
 opsman-configuration:
   vsphere:
     vcenter:
-      ca_cert: cert                 # REQUIRED if insecure = 0 (secure)
+      #ca_cert: cert                 # REQUIRED if insecure = 0 (secure)
       datacenter: Datacenter
       datastore: nex_iscsi
       folder: /Datacenter/vm/azakharov/pcf # RECOMMENDED, but not required
