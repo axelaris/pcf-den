@@ -55,4 +55,4 @@ credhub-ca: |
   vfN2Cw==
   -----END CERTIFICATE-----
 opsman-url: https://ops.b.cf4me.xyz
-pipeline-repo: https://github.com/axelaris/pcf-den.git
+pipeline-repo: git@github.com:axelaris/pcf-den.git

@@ -16,7 +16,7 @@ resources:
   type: git
   source:
     uri: ((pipeline-repo))
-    #private_key: ((plat-auto-pipes-deploy-key.private_key))
+    private_key: ((ci-deploy-key.private_key))
     branch: master
 
 jobs:
