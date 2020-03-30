@@ -1,0 +1,35 @@
+---
+opsman-configuration:
+  vsphere:
+    vcenter:
+      ca_cert: cert                 # REQUIRED if insecure = 0 (secure)
+      datacenter: Datacenter
+      datastore: nex_iscsi
+      folder: /Datacenter/vm/azakharov/pcf # RECOMMENDED, but not required
+      url: 172.16.172.29
+      username: ((vcenter-username))
+      password: ((vcenter-password))
+      resource_pool: azakharov
+      # resource_pool can use a cluster - /example-dc/host/example-cluster
+
+      # Optional
+      # host: host      # DEPRECATED - Platform Automation cannot guarantee
+                        # the location of the VM, given the nature of vSphere
+      insecure: 1     # default - 0 (secure) | 1 (insecure)
+
+    disk_type: thin     # thin|thick
+    dns: 8.8.8.8
+    gateway: 10.100.26.1
+    hostname: ops.b.cf4me.xyz
+    netmask: 255.255.255.192
+    network: example-virtual-network
+    ntp: ntp.ubuntu.com
+    private_ip: 10.0.0.10
+    ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqsL191j0510vG/aSSG3AzjRLwMqEcg2uFl73vO/6MWLfZBo8tHUOfkirAaDJuk4KL657PhLVX6GGD/qhBrxuuV573kc7hmbHRs0geahrJlVpwBYv94LF+5Q832v6ceW2vAGk8JFVpVno81EzIOOinWBDDMKZSVmA+XEHGVSJtJ7LLtMmbeZmhsNONrNTDj+AWAVgtuFmbLxjGqO6yThPwzohFW28INVfox70ggQuqlQJM8wS2P9LKdZoMGCrQTFZaUKRorUWdjNEHXv8d4TlRiw2H99UG6HY+HjEtvNXoRN/dc8Lirq5V9SJn3dYdt4xUiejg/jo0Rg0GFZQLmKLl alex@alexeyspmacbook.altoros.corp   # REQUIRED Ops Manager >= 2.6
+
+    # Optional
+    # cpu: 1                         # default - 1
+    # memory: 8                      # default - 8 (GB)
+    # ssh_password: ((ssh-password)) # REQUIRED if ssh_public_key not defined
+                                     # (Ops Manager < 2.6 ONLY)
+    # vm_name: ops-manager-vm        # default - ops-manager-vm
