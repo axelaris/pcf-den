@@ -21,10 +21,10 @@ opsman-configuration:
     dns: 8.8.8.8
     gateway: 10.100.26.1
     hostname: ops.b.cf4me.xyz
-    netmask: 255.255.255.192
-    network: example-virtual-network
+    netmask: 255.255.255.0
+    network: zakharov_vlan_1026
     ntp: ntp.ubuntu.com
-    private_ip: 10.0.0.10
+    private_ip: 10.100.26.2
     ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqsL191j0510vG/aSSG3AzjRLwMqEcg2uFl73vO/6MWLfZBo8tHUOfkirAaDJuk4KL657PhLVX6GGD/qhBrxuuV573kc7hmbHRs0geahrJlVpwBYv94LF+5Q832v6ceW2vAGk8JFVpVno81EzIOOinWBDDMKZSVmA+XEHGVSJtJ7LLtMmbeZmhsNONrNTDj+AWAVgtuFmbLxjGqO6yThPwzohFW28INVfox70ggQuqlQJM8wS2P9LKdZoMGCrQTFZaUKRorUWdjNEHXv8d4TlRiw2H99UG6HY+HjEtvNXoRN/dc8Lirq5V9SJn3dYdt4xUiejg/jo0Rg0GFZQLmKLl alex@alexeyspmacbook.altoros.corp   # REQUIRED Ops Manager >= 2.6
 
     # Optional
