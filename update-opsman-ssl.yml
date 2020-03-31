@@ -1,0 +1,22 @@
+---
+platform: linux
+
+inputs:
+- name: env
+
+params:
+  ENV_FILE: env.yml
+  CERT_FILE: cert.yml
+  PRIVATE_FILE: private.yml
+run:
+  path: bash
+  args:
+  - "-c"
+  - |
+    cat /var/version && echo ""
+    set -e
+    sed -i '1d' env/"${CERT_FILE}"
+    sed -i '1d' env/"${PRIVATE_FILE}"
+    sed -ie 's/^[ \t]*//' env/"${CERT_FILE}"
+    sed -ie 's/^[ \t]*//' env/"${PRIVATE_FILE}"
+    om --env env/"${ENV_FILE}" update-ssl-certificate --certificate-pem "$(cat env/${CERT_FILE})"  --private-key-pem "$(cat env/${PRIVATE_FILE})"
