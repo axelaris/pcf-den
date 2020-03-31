@@ -1,0 +1,4 @@
+---
+username: ((pcf-user))
+password: ((pcf-password))
+decryption-passphrase: ((pcf-password))
