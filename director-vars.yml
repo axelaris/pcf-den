@@ -1,0 +1,7 @@
+vcenter_cluster: PCF-v2
+iaas_configuration_vcenter_rp: azakharov
+vsphere_deployment_network: zakharov_vlan_1027
+deploy_network: 10.100.27.0/24
+dns_server: 8.8.8.8
+deploy_gateway: 10.100.27.1
+ntp_servers: pool.ntp.org
