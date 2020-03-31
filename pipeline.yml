@@ -81,3 +81,20 @@ jobs:
             params:
               repository: config-commit
               merge: true
+    - task: configure-auth
+      image: platform-automation-image
+      file: platform-automation-tasks/tasks/configure-authentication.yml
+      # params:
+      #   ENV_FILE: env.yml
+      #   AUTH_CONFIG_FILE: auth.yml
+      input_mapping:
+        env: interpolated-config
+        config: interpolated-config
+    - task: configure-ssl
+      image: platform-automation-image
+      file: config/update-opsman-ssl.yml
+      params:
+        CERT: ((ssl-cert.certificate))
+        KEY: ((ssl-cert.private_key))
+      input_mapping:
+        env: interpolated-config
