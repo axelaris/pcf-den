@@ -2,17 +2,17 @@ az-configuration:
 - name: az1
   clusters:
   - cluster: ((vcenter_cluster))
-    resource_pool: ((iaas_configuration_vcenter_rp))
+    resource_pool: ((vcenter_rp))
 
 networks-configuration:
   icmp_checks_enabled: true
   networks:
   - name: deployment
     subnets:
-    - iaas_identifier: ((vsphere_deployment_network))
-      cidr: ((deploy_network))
-      dns: ((dns_server))
-      gateway: ((deploy_gateway))
+    - iaas_identifier: ((vsphere_nw1_name))
+      cidr: ((vsphere_nw1_cidr))
+      dns: ((vsphere_nw1_dns))
+      gateway: ((vsphere_nw1_gw))
       reserved_ip_ranges:
       availability_zone_names:
       - az1
@@ -20,7 +20,9 @@ networks-configuration:
 network-assignment:
   network:
     name: deployment
-  other_availability_zones: []
+  singleton_availability_zone:
+    name: az1
+
 properties-configuration:
   director_configuration:
     blobstore_type: local
@@ -52,6 +54,22 @@ properties-configuration:
     opsmanager_root_ca_trusted_certs: false
   syslog_configuration:
     enabled: false
+  iaas_configuration:
+    additional_cloud_properties: {}
+    bosh_disk_path: ((iaas_disk_path))
+    bosh_template_folder: ((iaas_vm_path))
+    bosh_vm_folder: ((iaas_vm_path))
+    datacenter: ((iaas_dc))
+    disk_type: thin
+    ephemeral_datastores_string: ((iaas_disk))
+    name: ((iaas_name))
+    nsx_networking_enabled: false
+    persistent_datastores_string: ((iaas_disk))
+    ssl_verification_enabled: false
+    vcenter_host: ((iaas_host))
+    vcenter_username: ((iaas_user))
+    vcenter_password: ((iaas_pass))
+
 resource-configuration:
   compilation:
     additional_networks: []
