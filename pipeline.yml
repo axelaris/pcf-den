@@ -98,3 +98,9 @@ jobs:
         KEY: ((ssl-cert.private_key))
       input_mapping:
         env: interpolated-config
+    - task: configure-director
+      image: platform-automation-image
+      file: platform-automation-tasks/tasks/configure-director.yml
+      input_mapping:
+        config: interpolated-config
+        env: interpolated-config
