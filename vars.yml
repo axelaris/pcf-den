@@ -3,3 +3,8 @@ credhub-server: https://10.100.26.6:8844
 credhub-ca: ((credhub-ca.certificate))
 #opsman-url: https://ops.b.cf4me.xyz
 pipeline-repo: git@github.com:axelaris/pcf-den.git
+
+s3_bucket: pcf-backup
+# s3_endpoint: s3.cf4me.xyz
+# s3_access_key_id: admin
+# s3_secret_access_key: m1n1o678

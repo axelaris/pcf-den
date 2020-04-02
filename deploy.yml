@@ -1,0 +1,156 @@
+---
+resources:
+- name: config
+  type: git
+  source:
+    uri: ((pipeline-repo))
+    private_key: ((ci-deploy-key.private_key))
+    branch: master
+
+- name: platform-automation-image
+  type: s3
+  source:
+    endpoint: ((s3_endpoint))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: platform-automation
+    regexp:  platform-automation-image-(.*).tgz
+    skip_ssl_verification: true
+
+- name: platform-automation-tasks
+  type: s3
+  source:
+    endpoint: ((s3_endpoint))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: platform-automation
+    regexp:  platform-automation-tasks-(.*).zip
+    skip_ssl_verification: true
+
+- name: ops-manager
+  type: s3
+  source:
+    endpoint: ((s3_endpoint))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: products
+    regexp:  ops-manager-vsphere-(.*).ova
+    skip_ssl_verification: true
+
+# - name: pas
+#   type: s3
+#   source:
+#     endpoint: ((s3_endpoint))
+#     access_key_id: ((s3_access_key_id))
+#     secret_access_key: ((s3_secret_access_key))
+#     bucket: products
+#     regexp: cf-(.*).pivotal
+#     skip_ssl_verification: true
+
+- name: backup
+  type: s3
+  source:
+    access_key_id: ((s3_access_key_id))
+    bucket: ((s3_bucket))
+    endpoint: ((s3_endpoint))
+    secret_access_key: ((s3_secret_access_key))
+    regexp:  pcf-deployment-(.*).zip
+    skip_ssl_verification: true
+
+jobs:
+- name: ops-manager
+  serial: true
+  plan:
+  - in_parallel:
+    - get: platform-automation-image
+      params:
+        globs: ["*image*.tgz"]
+        unpack: true
+    - get: platform-automation-tasks
+      params:
+        globs: ["*tasks*.zip"]
+        unpack: true
+    - get: config
+  - get: ops-manager
+    params:
+      globs: ["*.ova"]
+  - task: credhub-interpolate
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/credhub-interpolate.yml
+    params:
+      CREDHUB_CLIENT: ((credhub-client))
+      CREDHUB_SECRET: ((credhub-secret))
+      CREDHUB_SERVER: ((credhub-server))
+      CREDHUB_CA_CERT: ((credhub-ca))
+      PREFIX: /concourse/main/foundation
+    input_mapping:
+      files: config
+    output_mapping:
+      interpolated-files: interpolated-config
+  - task: create-vm
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/create-vm.yml
+    input_mapping:
+      config: interpolated-config
+      state: config
+      image: ops-manager
+    ensure:
+      do:
+        - task: make-commit
+          image: platform-automation-image
+          file: platform-automation-tasks/tasks/make-git-commit.yml
+          input_mapping:
+            repository: config
+            file-source: generated-state
+          output_mapping:
+            repository-commit: config-commit
+          params:
+            FILE_SOURCE_PATH: state.yml
+            FILE_DESTINATION_PATH: state.yml
+            GIT_AUTHOR_EMAIL: "alexey.zakharov@altoros.com"
+            GIT_AUTHOR_NAME: "Platform Automation Toolkit Bot"
+            COMMIT_MESSAGE: 'Update state file'
+        - put: config
+          params:
+            repository: config-commit
+            merge: true
+  - task: configure-auth
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/configure-authentication.yml
+    input_mapping:
+      env: interpolated-config
+      config: interpolated-config
+  - task: configure-ssl
+    image: platform-automation-image
+    file: config/update-opsman-ssl.yml
+    params:
+      CERT: ((ssl-cert.certificate))
+      KEY: ((ssl-cert.private_key))
+    input_mapping:
+      env: interpolated-config
+  - task: configure-director
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/configure-director.yml
+    params:
+      VARS_FILES: config/director-vars.yml
+    input_mapping:
+      config: interpolated-config
+      env: interpolated-config
+  - task: apply-director-changes
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/apply-director-changes.yml
+    # params:
+    #   ENV_FILE: ((foundation))/env/env.yml
+    input_mapping:
+      env: interpolated-config
+  - task: export-installation
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/export-installation.yml
+    params:
+      INSTALLATION_FILE: pcf-deployment-$timestamp.zip
+      #ENV_FILE: ((foundation))/env/env.yml
+    input_mapping:
+      env: interpolated-config
+  - put: backup
+    params:
+      file: installation/pcf-deployment*.zip
