@@ -88,6 +88,8 @@ product-properties:
         cert_pem: ((ssl-cert.certificate))
         private_key_pem: ((ssl-cert.private_key))
       name: router-certs
+  .properties.security_acknowledgement:
+    value: X
   .properties.cloud_controller_completed_tasks_cutoff_age_in_days:
     value: 31
   .properties.cloud_controller_default_health_check_timeout:
@@ -115,6 +117,14 @@ product-properties:
   .properties.credhub_database:
     selected_option: internal_mysql
     value: internal_mysql
+  .properties.credhub_internal_provider_keys:
+    value:
+    - key:
+        secret: ((pas_secret))
+      name: pas.key
+      primary: true
+  .mysql_monitor.recipient_email:
+    value: ((mysql_email))
   .properties.diego_database_max_open_connections:
     value: 100
   .properties.diego_log_timestamp_format:
@@ -309,6 +319,8 @@ product-properties:
     value: 20
   .router.request_timeout_in_seconds:
     value: 900
+  .router.static_ips:
+    value: ((router_ip))
   .uaa.apps_manager_access_token_lifetime:
     value: 3600
   .uaa.cf_cli_access_token_lifetime:

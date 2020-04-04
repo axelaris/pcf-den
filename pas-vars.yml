@@ -1,2 +1,4 @@
 apps_domain: b.cf4me.xyz
 system_domain: b.cf4me.xyz
+mysql_email: themech@gmail.com
+router_ip: 10.100.27.15

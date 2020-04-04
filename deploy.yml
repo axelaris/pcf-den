@@ -37,15 +37,26 @@ resources:
     regexp:  ops-manager-vsphere-(.*).ova
     skip_ssl_verification: true
 
-# - name: pas
-#   type: s3
-#   source:
-#     endpoint: ((s3_endpoint))
-#     access_key_id: ((s3_access_key_id))
-#     secret_access_key: ((s3_secret_access_key))
-#     bucket: products
-#     regexp: cf-(.*).pivotal
-#     skip_ssl_verification: true
+- name: pas
+  type: s3
+  source:
+    endpoint: ((s3_endpoint))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: products
+    regexp: cf-(.*).pivotal
+    skip_ssl_verification: true
+
+- name: pas-stemcell
+  type: s3
+  source:
+    endpoint: ((s3_endpoint))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: products
+    regexp: pas-stemcell/bosh-stemcell-(.*)-vsphere(.*)\.tgz
+    skip_ssl_verification: true
+
 
 - name: backup
   type: s3
@@ -56,6 +67,20 @@ resources:
     secret_access_key: ((s3_secret_access_key))
     regexp:  pcf-deployment-(.*).zip
     skip_ssl_verification: true
+
+credhub-interpolate: &interpolate-creds
+  image: platform-automation-image
+  file: platform-automation-tasks/tasks/credhub-interpolate.yml
+  params:
+    CREDHUB_CLIENT: ((credhub-client))
+    CREDHUB_SECRET: ((credhub-secret))
+    CREDHUB_SERVER: ((credhub-server))
+    CREDHUB_CA_CERT: ((credhub-ca))
+    PREFIX: /concourse/main/foundation
+  input_mapping:
+    files: config
+  output_mapping:
+    interpolated-files: interpolated-config
 
 jobs:
 - name: ops-manager
@@ -75,18 +100,7 @@ jobs:
     params:
       globs: ["*.ova"]
   - task: credhub-interpolate
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/credhub-interpolate.yml
-    params:
-      CREDHUB_CLIENT: ((credhub-client))
-      CREDHUB_SECRET: ((credhub-secret))
-      CREDHUB_SERVER: ((credhub-server))
-      CREDHUB_CA_CERT: ((credhub-ca))
-      PREFIX: /concourse/main/foundation
-    input_mapping:
-      files: config
-    output_mapping:
-      interpolated-files: interpolated-config
+    <<: *interpolate-creds
   - task: create-vm
     image: platform-automation-image
     file: platform-automation-tasks/tasks/create-vm.yml
@@ -154,3 +168,119 @@ jobs:
   - put: backup
     params:
       file: installation/pcf-deployment*.zip
+
+- name: stage
+  serial: true
+  plan:
+  - in_parallel:
+      - get: platform-automation-image
+        params:
+          unpack: true
+      - get: platform-automation-tasks
+        params:
+          unpack: true
+      - get: config
+        passed: [ "ops-manager" ]
+        trigger: true
+      # - get: pks
+      # - get: pks-stemcell
+      - get: pas
+      - get: pas-stemcell
+      # - get: healthwatch-product
+      # - get: healthwatch-stemcell
+  - task: interpolate-creds
+    <<: *interpolate-creds
+  # - task: upload-product-pks
+  #   image: platform-automation-image
+  #   file: platform-automation-tasks/tasks/upload-and-stage-product.yml
+  #   params:
+  #     ENV_FILE: ((foundation))/env/env.yml
+  #   input_mapping:
+  #     product: pks-product
+  #     env: interpolated-creds
+  # - task: upload-pks-stemcell
+  #   image: platform-automation-image
+  #   file: platform-automation-tasks/tasks/upload-stemcell.yml
+  #   params:
+  #     ENV_FILE: ((foundation))/env/env.yml
+  #   input_mapping:
+  #     env: interpolated-creds
+  #     stemcell: pks-stemcell
+  # - task: upload-product-healthwatch
+  #   image: platform-automation-image
+  #   file: platform-automation-tasks/tasks/upload-and-stage-product.yml
+  #   params:
+  #     ENV_FILE: ((foundation))/env/env.yml
+  #   input_mapping:
+  #     product: healthwatch-product
+  #     env: interpolated-creds
+  # - task: upload-healthwatch-stemcell
+  #   image: platform-automation-image
+  #   file: platform-automation-tasks/tasks/upload-stemcell.yml
+  #   params:
+  #     ENV_FILE: ((foundation))/env/env.yml
+  #   input_mapping:
+  #     env: interpolated-creds
+  #     stemcell: healthwatch-stemcell
+  - task: upload-product-pas
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/upload-and-stage-product.yml
+    # params:
+    #   ENV_FILE: ((foundation))/env/env.yml
+    input_mapping:
+      env: interpolated-config
+      product: pas
+  - task: upload-pas-stemcell
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/upload-stemcell.yml
+    input_mapping:
+      env: interpolated-config
+      stemcell: pas-stemcell
+
+- name: configure
+  serial: true
+  plan:
+  - in_parallel:
+      - get: platform-automation-image
+        params:
+          unpack: true
+      - get: platform-automation-tasks
+        params:
+          unpack: true
+      - get: config
+        passed: [ "stage" ]
+        trigger: true
+  - task: interpolate-creds
+    <<: *interpolate-creds
+  - task: configure-pas
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/configure-product.yml
+    params:
+      CONFIG_FILE: pas.yml
+      VARS_FILES: config/pas-vars.yml
+    input_mapping:
+      env: interpolated-config
+      config: interpolated-config
+      vars: interpolated-config
+
+
+- name: apply
+  serial: true
+  plan:
+  - in_parallel:
+      - get: platform-automation-image
+        params:
+          unpack: true
+      - get: platform-automation-tasks
+        params:
+          unpack: true
+      - get: config
+        passed: [ "configure" ]
+        trigger: true
+  - task: interpolate-creds
+    <<: *interpolate-creds
+  - task: apply-product-changes
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/apply-changes.yml
+    input_mapping:
+      env: interpolated-config
