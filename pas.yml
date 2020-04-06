@@ -367,7 +367,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -383,7 +383,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -399,7 +399,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -415,7 +415,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -431,7 +431,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -479,7 +479,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -593,7 +593,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -609,7 +609,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
@@ -659,7 +659,7 @@ resource-config:
     additional_vm_extensions: []
     instance_type:
       id: automatic
-    instances: automatic
+    instances: 1
     nsx:
       lbs: []
       security_groups: []
