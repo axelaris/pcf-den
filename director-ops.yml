@@ -1,0 +1,55 @@
+---
+- type: replace
+  path: /az-configuration
+  value:
+  - name: az1
+    clusters:
+    - cluster: ((vcenter_cluster))
+      resource_pool: ((vcenter_rp))
+
+- type: replace
+  path: /networks-configuration/networks
+  value:
+  - name: deployment
+    subnets:
+    - iaas_identifier: ((vsphere_nw1_name))
+      cidr: ((vsphere_nw1_cidr))
+      dns: ((vsphere_nw1_dns))
+      gateway: ((vsphere_nw1_gw))
+      reserved_ip_ranges:
+      availability_zone_names:
+      - az1
+
+- type: replace
+  path: /network-assignment
+  value:
+    network:
+      name: deployment
+    singleton_availability_zone:
+      name: az1
+
+- type: replace
+  path: /properties-configuration/director_configuration/ntp_servers_string
+  value: ((ntp_servers))
+
+- type: replace
+  path: /properties-configuration/iaas_configuration?
+  value:
+    additional_cloud_properties: {}
+    bosh_disk_path: ((iaas_disk_path))
+    bosh_template_folder: ((iaas_vm_path))
+    bosh_vm_folder: ((iaas_vm_path))
+    datacenter: ((iaas_dc))
+    disk_type: thin
+    ephemeral_datastores_string: ((iaas_disk))
+    name: ((iaas_name))
+    nsx_networking_enabled: false
+    persistent_datastores_string: ((iaas_disk))
+    ssl_verification_enabled: false
+    vcenter_host: ((iaas_host))
+    vcenter_username: ((iaas_user))
+    vcenter_password: ((iaas_pass))
+
+- type: replace
+  path: /iaas_configuration?
+  value: ""
