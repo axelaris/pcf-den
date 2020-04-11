@@ -191,51 +191,13 @@ jobs:
       - get: config
         passed: [ "ops-manager" ]
         trigger: true
-      # - get: pks
-      # - get: pks-stemcell
       - get: pas
       - get: pas-stemcell
-      # - get: healthwatch-product
-      # - get: healthwatch-stemcell
   - task: interpolate-creds
     <<: *interpolate-creds
-  # - task: upload-product-pks
-  #   image: platform-automation-image
-  #   file: platform-automation-tasks/tasks/upload-and-stage-product.yml
-  #   params:
-  #     ENV_FILE: ((foundation))/env/env.yml
-  #   input_mapping:
-  #     product: pks-product
-  #     env: interpolated-creds
-  # - task: upload-pks-stemcell
-  #   image: platform-automation-image
-  #   file: platform-automation-tasks/tasks/upload-stemcell.yml
-  #   params:
-  #     ENV_FILE: ((foundation))/env/env.yml
-  #   input_mapping:
-  #     env: interpolated-creds
-  #     stemcell: pks-stemcell
-  # - task: upload-product-healthwatch
-  #   image: platform-automation-image
-  #   file: platform-automation-tasks/tasks/upload-and-stage-product.yml
-  #   params:
-  #     ENV_FILE: ((foundation))/env/env.yml
-  #   input_mapping:
-  #     product: healthwatch-product
-  #     env: interpolated-creds
-  # - task: upload-healthwatch-stemcell
-  #   image: platform-automation-image
-  #   file: platform-automation-tasks/tasks/upload-stemcell.yml
-  #   params:
-  #     ENV_FILE: ((foundation))/env/env.yml
-  #   input_mapping:
-  #     env: interpolated-creds
-  #     stemcell: healthwatch-stemcell
   - task: upload-product-pas
     image: platform-automation-image
     file: platform-automation-tasks/tasks/upload-and-stage-product.yml
-    # params:
-    #   ENV_FILE: ((foundation))/env/env.yml
     input_mapping:
       env: interpolated-config
       product: pas
@@ -261,17 +223,23 @@ jobs:
         trigger: true
   - task: interpolate-creds
     <<: *interpolate-creds
+  - task: staged-config
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/staged-config.yml
+    params:
+      PRODUCT_NAME: cf
+    input_mapping:
+      env: interpolated-config
   - task: configure-pas
     image: platform-automation-image
     file: platform-automation-tasks/tasks/configure-product.yml
     params:
-      CONFIG_FILE: pas.yml
-      VARS_FILES: config/pas-vars.yml
+      CONFIG_FILE: cf.yml
+      VARS_FILES: interpolated-config/pas-vars.yml
     input_mapping:
       env: interpolated-config
-      config: interpolated-config
+      config: generated-config
       vars: interpolated-config
-
 
 - name: apply
   serial: true
@@ -312,8 +280,6 @@ jobs:
   - task: delete-installation
     image: platform-automation-image
     file: platform-automation-tasks/tasks/delete-installation.yml
-    # params:
-    #   ENV_FILE: ((foundation))/env/env.yml
     input_mapping:
       env: interpolated-config
   # - task: delete-vm

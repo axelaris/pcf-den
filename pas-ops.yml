@@ -1,0 +1,103 @@
+---
+- type: replace
+  path: /product-properties/.cloud_controller.apps_domain?/value
+  value: ((apps_domain))
+
+- type: replace
+  path: /product-properties/.cloud_controller.system_domain?/value
+  value: ((system_domain))
+
+- type: replace
+  path: /product-properties/.properties.networking_poe_ssl_certs?/value
+  value:
+    - name: router-certs
+      certificate:
+        cert_pem: ((ssl-cert.certificate))
+        private_key_pem: ((ssl-cert.private_key))
+
+- type: replace
+  path: /product-properties/.properties.security_acknowledgement?/value
+  value: X
+
+- type: replace
+  path: /product-properties/.properties.credhub_internal_provider_keys?/value
+  value:
+    - name: pas.key
+      key:
+        secret: ((pas_secret))
+      primary: true
+
+- type: replace
+  path: /product-properties/.mysql_monitor.recipient_email?/value
+  value: ((mysql_email))
+
+- type: replace
+  path: /product-properties/.router.static_ips?/value
+  value: ((router_ip))
+
+- type: replace
+  path: /product-properties/.uaa.service_provider_key_credentials?/value
+  value:
+    cert_pem: ((ssl-cert.certificate))
+    private_key_pem: ((ssl-cert.private_key))
+
+- type: replace
+  path: /product-properties/.uaa.service_provider_key_password?/value
+  value:
+    secret: ((pas_secret))
+
+- type: replace
+  path: /resource-config/clock_global/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/cloud_controller/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/cloud_controller_worker/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/credhub/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/diego_brain/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/diego_cell/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/diego_database/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/doppler/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/loggregator_trafficcontroller/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/mysql/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/mysql_proxy/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/nats/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/router/instances
+  value: 1
+
+- type: replace
+  path: /resource-config/uaa/instances
+  value: 1
