@@ -235,7 +235,8 @@ jobs:
     file: platform-automation-tasks/tasks/configure-product.yml
     params:
       CONFIG_FILE: cf.yml
-      VARS_FILES: interpolated-config/pas-vars.yml
+      VARS_FILES: env/pas-vars.yml
+      OPS_FILES: env/pas-ops.yml
     input_mapping:
       env: interpolated-config
       config: generated-config
