@@ -153,8 +153,9 @@ jobs:
     image: platform-automation-image
     file: platform-automation-tasks/tasks/configure-director.yml
     params:
-      VARS_FILES: config/director-vars.yml
-      OPS_FILES: config/director-ops.yml
+      #DIRECTOR_CONFIG_FILE: director.yml
+      VARS_FILES: env/director-vars.yml
+      OPS_FILES: env/director-ops.yml
     input_mapping:
       config: generated-config
       env: interpolated-config

@@ -33,23 +33,17 @@
   value: ((ntp_servers))
 
 - type: replace
-  path: /properties-configuration/iaas_configuration?
-  value:
-    additional_cloud_properties: {}
-    bosh_disk_path: ((iaas_disk_path))
-    bosh_template_folder: ((iaas_vm_path))
-    bosh_vm_folder: ((iaas_vm_path))
-    datacenter: ((iaas_dc))
-    disk_type: thin
-    ephemeral_datastores_string: ((iaas_disk))
-    name: ((iaas_name))
-    nsx_networking_enabled: false
-    persistent_datastores_string: ((iaas_disk))
-    ssl_verification_enabled: false
-    vcenter_host: ((iaas_host))
-    vcenter_username: ((iaas_user))
-    vcenter_password: ((iaas_pass))
+  path: /iaas-configurations/0/datacenter?
+  value: ((iaas_dc))
 
 - type: replace
-  path: /iaas_configuration?
-  value: ""
+  path: /iaas-configurations/0/vcenter_host?
+  value: ((iaas_host))
+
+- type: replace
+  path: /iaas-configurations/0/vcenter_username?
+  value: ((iaas_user))
+
+- type: replace
+  path: /iaas-configurations/0/vcenter_password?
+  value: ((iaas_pass))

@@ -6,11 +6,17 @@ vsphere_nw1_dns: 8.8.8.8
 vsphere_nw1_gw: 10.100.27.1
 ntp_servers: pool.ntp.org
 
-iaas_disk_path: pcf_disk
-iaas_vm_path: azakharov/pcf
+iaas-configurations_0_bosh_disk_path: pcf_disk
+iaas-configurations_0_bosh_template_folder: azakharov/pcf
+iaas-configurations_0_bosh_vm_folder: azakharov/pcf
+iaas-configurations_0_disk_type: thin
+iaas-configurations_0_ephemeral_datastores_string: nex_iscsi
+iaas-configurations_0_persistent_datastores_string: nex_iscsi
+iaas-configurations_0_name: Denver
+iaas-configurations_0_nsx_networking_enabled: false
+iaas-configurations_0_ssl_verification_enabled: false
+properties-configuration_security_configuration_generate_vm_passwords: false
 iaas_dc: Datacenter
-iaas_disk: nex_iscsi
-iaas_name: Denver
 iaas_host: 172.16.172.29
 iaas_user: ((vcenter-username))
 iaas_pass: ((vcenter-password))
