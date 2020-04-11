@@ -1,0 +1,4 @@
+credhub-server: https://10.100.26.6:8844
+credhub-ca: ((credhub-ca.certificate))
+pipeline-repo: git@github.com:axelaris/pcf-den.git
+s3_bucket: pcf-backup

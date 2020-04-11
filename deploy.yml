@@ -108,7 +108,7 @@ jobs:
       config: interpolated-config
       state: config
       image: ops-manager
-    ensure:
+    ensure: &make-commit
       do:
         - task: make-commit
           image: platform-automation-image
@@ -283,13 +283,29 @@ jobs:
     file: platform-automation-tasks/tasks/delete-installation.yml
     input_mapping:
       env: interpolated-config
-  # - task: delete-vm
-  #   image: platform-automation-image
-  #   file: platform-automation-tasks/tasks/delete-vm.yml
-  #   params:
-  #     OPSMAN_CONFIG_FILE: ((foundation))/config/opsman.yml
-  #     STATE_FILE: ((foundation))/state/state.yml
-  #   input_mapping:
-  #     config: interpolated-creds
-  #     state: config
-  #   ensure: *make-commit
+
+- name: delete-vm
+  serial: true
+  plan:
+  - in_parallel:
+    - get: platform-automation-image
+      params:
+        unpack: true
+    - get: platform-automation-tasks
+      params:
+        unpack: true
+    - get: config
+      passed: ["undeploy"]
+      trigger: false
+  - task: interpolate-creds
+    <<: *interpolate-creds
+  - task: delete-vm
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/delete-vm.yml
+    params:
+      OPSMAN_CONFIG_FILE: opsman.yml
+      STATE_FILE: state.yml
+    input_mapping:
+      config: interpolated-config
+      state: config
+    ensure: *make-commit
