@@ -46,6 +46,12 @@
   value:
     secret: ((pas_secret))
 
+- type: replace
+  path: /product-properties/.properties.haproxy_forward_tls
+  value:
+    selected_option: disable
+    value: disable
+
 # Remove unnecessary variables
 
 - type: remove
